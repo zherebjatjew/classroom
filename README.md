@@ -1,5 +1,5 @@
-assroom
-=======
+Classroom
+=========
 
 Sample project using MongoDB
 
