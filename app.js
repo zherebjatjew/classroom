@@ -48,6 +48,20 @@ function authorized(req, res, action) {
 Just ensure the service is up
 */
 app.get('/api', function(req, res) {
+  db.users.find({ role: 'director' }, function(err, users) {
+    if (err) {
+      return res.send(500, { code: 500, message: "Error accessing MongoDB database", reason: err });
+    }
+    // Initialize the db with director account
+    if (users.size == 0) {
+      db.users.save({ name: 'boss', password: '0', role: 'director' }, function(err, director) {
+        if (err) {
+          return res.send(500, { code: 500, message: "Error initializing database", reason: err });
+        }
+        return res.send({ code: 200, message: "Director account was created for you. You can change password later", account: director });
+      });
+    }
+  });
   res.send('API is running');
 });
 
@@ -78,6 +92,30 @@ app.get('/api/login/:name/:password', function(req, res) {
           return res.send({ id: user.id, token: token });
         }
       });
+    });
+  });
+});
+
+
+/*
+Update account profile
+> old_password - old password
+> new_password - new password (optional)
+*/
+app.put('/api/:key/profile', function(req, res) {
+  authorized(req, res, function(req, res, agent) {
+    if (!req.body.old_password) {
+      return res.send(400, { code: 400, message: "Parameter was not found: old_password" });
+    }
+    if (agent.password != req.body.old_password) {
+      return res.send(400, { code: 400, message: "Incorrect old_password value" });
+    }
+    agent.password = req.body.new_password;
+    db.users.save(agent, function(err, record) {
+      if (err) {
+        return res.send(500, { code: 500, message: "Error updating your profile", reason: err });
+      }
+      return res.send({ code: 200, message: "Profile was updated" });
     });
   });
 });
