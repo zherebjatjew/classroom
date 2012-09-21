@@ -6,7 +6,7 @@ var app_root = __dirname,
     crypto = require('crypto');
 
 var collections = ["users", "subjects"],
-    db = mongojs.connect('mydb', collections),
+    db = mongojs.connect('localhost:27000/mydb', collections),
     ObjectId = mongojs.ObjectId;
     
 
@@ -53,16 +53,19 @@ app.get('/api', function(req, res) {
       return res.send(500, { code: 500, message: "Error accessing MongoDB database", reason: err });
     }
     // Initialize the db with director account
-    if (users.size == 0) {
+    if (users.length == 0) {
       db.users.save({ name: 'boss', password: '0', role: 'director' }, function(err, director) {
         if (err) {
+          console.log("Error saving director");
           return res.send(500, { code: 500, message: "Error initializing database", reason: err });
         }
+        console.log("Saved director ", director);
         return res.send({ code: 200, message: "Director account was created for you. You can change password later", account: director });
       });
+    } else {
+      res.send('API is running');
     }
   });
-  res.send('API is running');
 });
 
 

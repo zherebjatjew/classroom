@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# MongoDB version to download
+VERSION='mongodb-linux-i686-2.2.0'
+
+cd $(dirname $0)
+wget http://fastdl.mongodb.org/linux/${VERSION}.tgz
+tar -zxf ${VERSION}.tgz
+ln -s $VERSION mongodb
+rm -f ${VERSION}.tgz
+cd -
+

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Download mongodb
+if [ ! -f dist/mongodb/mongo ]; then
+  sh dist/install
+fi
+
+# Deploy virtual environments
+sudo apt-get install -y vagrant
+vagrant up
+sh distributed/setup-shards.sh
+sh distrubuted/setup-env.sh
+
+# Start the service
+./app.js &
+
+

@@ -6,14 +6,23 @@ Sample project using MongoDB
 Installation
 ------------
 
-sudo apt-get install npm mongodb curl
+sudo apt-get install -y npm mongodb curl
 
 npm install mongodb mongojs express
 
 Run
 ---
 
-./app.js &
+./run-local
+
+
+Run with sharding
+-----------------
+
+./run-sharded
+
+Check
+-----
 
 curl http://localhost:8080/api
 
